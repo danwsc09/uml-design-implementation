@@ -132,7 +132,30 @@ public class Game {
     }
 
     private void playDealersHand() {
-        // TODO
+        System.out.println("Dealer's turn to play");
+        for (Card card : dealer.hand) {
+            System.out.print(card + " ");
+        }
+        System.out.println();
+
+        while (evaluateHand(dealer.hand) <= 16) {
+            Card newCard = deck.dealCard(true);
+            System.out.println("Dealer gets a card: " + newCard);
+            dealer.hand.add(newCard);
+            for (Card card : dealer.hand) {
+                System.out.print(card + " ");
+            }
+            System.out.println();
+        }
+
+        int dealerValue = evaluateHand(dealer.hand);
+        if (dealerValue > 21) {
+            System.out.println("Dealer is bust.");
+        } else if (dealerValue == 21) {
+            System.out.println("Dealer gets a blackjack");
+        } else {
+            System.out.println("Dealer's value: " + dealerValue);
+        }
     }
 
     private void displayResult() {
