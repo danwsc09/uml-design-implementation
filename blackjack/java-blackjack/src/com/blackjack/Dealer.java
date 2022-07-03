@@ -12,7 +12,7 @@ public class Dealer implements Player {
     public Dealer(Game theGame) {
         this.game = theGame;
         this.hand = new ArrayList<>();
-        this.status = PlayerStatus.READY;
+        this.status = PlayerStatus.IN_PLAY;
     }
 
     @Override

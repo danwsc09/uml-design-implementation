@@ -13,7 +13,7 @@ public class User implements Player {
     public User(Game theGame, String theName) {
         this.game = theGame;
         this.hand = new ArrayList<>();
-        this.status = PlayerStatus.READY;
+        this.status = PlayerStatus.IN_PLAY;
         this.name = theName;
     }
 

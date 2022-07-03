@@ -1,5 +1,5 @@
 package com.blackjack;
 
 public enum PlayerStatus {
-    READY, IN_PLAY, BLACKJACK, BUST
+    IN_PLAY, BLACKJACK, BUST
 }
