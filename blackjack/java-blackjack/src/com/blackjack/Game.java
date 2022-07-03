@@ -1,6 +1,7 @@
 package com.blackjack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,7 +27,6 @@ public class Game {
         String userInput;
 
         do {
-            // TODO
             this.reset();
             this.dealCardToPlayers();
             this.dealCardToDealer();
@@ -42,7 +42,11 @@ public class Game {
     }
 
     private void reset() {
-        // TODO
+        deck.reset();
+        for (User user : users) {
+            user.reset();
+        }
+        dealer.reset();
     }
 
     private void dealCardToPlayers() {
@@ -121,7 +125,7 @@ public class Game {
                 max = handValue;
             }
 
-        return max;
+        return max == 0 ? Collections.min(values) : max;
     }
 
     private boolean checkIfHouseWins() {
@@ -159,7 +163,12 @@ public class Game {
     }
 
     private void displayResult() {
-        // TODO
+        for (User user : users) {
+            String message = String.format("%s: %s. Cards: %s\n", user.name, user.status, user.hand);
+            System.out.println(message);
+        }
+        String message = String.format("dealer: %s. Cards: %s\n", dealer.status, dealer.hand);
+        System.out.println(message);
     }
 
 }

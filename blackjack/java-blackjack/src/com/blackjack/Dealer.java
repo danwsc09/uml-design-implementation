@@ -24,4 +24,10 @@ public class Dealer implements Player {
     public PlayerStatus playHand() {
         return null;
     }
+
+    @Override
+    public void reset() {
+        this.hand = new ArrayList<>();
+        this.status = PlayerStatus.IN_PLAY;
+    }
 }

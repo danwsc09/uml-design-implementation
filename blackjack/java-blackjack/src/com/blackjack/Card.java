@@ -24,7 +24,3 @@ public class Card {
         return suit + " " + value;
     }
 }
-
-enum Suit {
-    CLUBS, DIAMONDS, HEARTS, SPADES
-}

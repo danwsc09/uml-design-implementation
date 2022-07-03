@@ -29,6 +29,10 @@ public class Deck {
         cards.sort((c1, c2) -> Double.compare(Math.random(), 0.5));
     }
 
+    public void reset() {
+        cards = generateDeck();
+        shuffle();
+    }
 
     public Card dealCard(boolean isFaceUp) {
         Card card = cards.remove(cards.size() - 1);
