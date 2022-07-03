@@ -8,6 +8,7 @@ public class Game {
     public List<User> users;
     public Dealer dealer;
     public Deck deck;
+    private Scanner scanner;
 
     public Game(List<String> names) {
         // FUTURE: implement multi-player mode (with multiple users)
@@ -18,11 +19,11 @@ public class Game {
 
         this.dealer = new Dealer(this);
         this.deck = new Deck();
+        scanner = new Scanner(System.in);
     }
 
     public void startGame() {
         String userInput;
-        Scanner sc = new Scanner(System.in);
 
         do {
             // TODO
@@ -35,8 +36,9 @@ public class Game {
                 this.playDealersHand();
             }
             this.displayResult();
-            userInput = sc.nextLine();
-        } while (userInput.startsWith("y"));
+            System.out.println("Play again? (y/n)");
+            userInput = scanner.nextLine();
+        } while (userInput.startsWith("y") || userInput.startsWith("Y"));
     }
 
     private void reset() {
@@ -44,25 +46,89 @@ public class Game {
     }
 
     private void dealCardToPlayers() {
-        // TODO
+        for (User user : users) {
+            user.hand.add(deck.dealCard(true));
+            user.hand.add(deck.dealCard(true));
+            if (evaluateHand(user.hand) == 21) {
+                user.status = PlayerStatus.BLACKJACK;
+            }
+        }
     }
 
     private void dealCardToDealer() {
-        // TODO
+        dealer.hand.add(deck.dealCard(false));
+        dealer.hand.add(deck.dealCard(true));
     }
 
     private void playPlayersHands() {
-        // TODO
+        String userInput;
+        for (User user : users) {
+            System.out.println(user.name + "'s status: " + user.status);
+            while (user.status == PlayerStatus.IN_PLAY) {
+                System.out.println("Your cards:");
+                for (Card card : user.hand)
+                    System.out.print(card + " ");
+                System.out.println();
+
+                System.out.println("Hit or stand? (h/s)");
+                userInput = scanner.nextLine();
+                if (userInput.startsWith("s") || userInput.startsWith("S")) {
+                    System.out.println("You've chosen to stand.");
+                    break;
+                } else if (userInput.startsWith("h") || userInput.startsWith("H")) {
+                    Card newCard = deck.dealCard(true);
+                    System.out.println("Here's a card for you: " + newCard);
+                    user.hand.add(newCard);
+                    int userHandValue = evaluateHand(user.hand);
+                    if (userHandValue == 21) {
+                        user.status = PlayerStatus.BLACKJACK;
+                    } else if (userHandValue > 21) {
+                        user.status = PlayerStatus.BUST;
+                    }
+                } else {
+                    System.out.println("Invalid input. Let's try again.");
+                }
+            }
+            switch (user.status) {
+                case IN_PLAY -> System.out.println(user.name + "'s best value: " + evaluateHand(user.hand));
+                case BLACKJACK -> System.out.println(user.name + ": BLACKJACK!");
+                default -> System.out.println(user.name + " is BUST.");
+            }
+        }
     }
 
     public int evaluateHand(List<Card> cards) {
-        // TODO
-        return 0;
+        List<Integer> values = new ArrayList<>();
+        int first = cards.get(0).getCardValue();
+        values.add(first);
+        if (first == 1)
+            values.add(11);
+
+        for (int i = 1; i < cards.size(); i++) {
+            int theCard = cards.get(i).getCardValue();
+            int n = values.size();
+            for (int j = 0; j < n; j++) {
+                values.set(j, values.get(j) + theCard);
+                if (theCard == 1) {
+                    values.add(values.get(j) + 10);
+                }
+            }
+        }
+
+        int max = 0;
+        for (int handValue : values)
+            if (handValue <= 21 && handValue > max) {
+                max = handValue;
+            }
+
+        return max;
     }
 
     private boolean checkIfHouseWins() {
-        // TODO
-        return false;
+        for (User user : users)
+            if (user.status == PlayerStatus.IN_PLAY || user.status == PlayerStatus.BLACKJACK)
+                return false;
+        return true;
     }
 
     private void playDealersHand() {

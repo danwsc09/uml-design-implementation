@@ -10,6 +10,19 @@ public class Card {
         this.value = theValue;
         this.isFaceUp = isFaceUp;
     }
+
+    public int getCardValue() {
+        return switch (value) {
+            case "A" -> 1;
+            case "J", "Q", "K" -> 10;
+            default -> Integer.parseInt(value);
+        };
+    }
+
+    @Override
+    public String toString() {
+        return suit + " " + value;
+    }
 }
 
 enum Suit {
