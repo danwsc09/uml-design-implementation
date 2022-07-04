@@ -65,39 +65,8 @@ public class Game {
     }
 
     private void playPlayersHands() {
-        String userInput;
         for (User user : users) {
-            System.out.println(user.name + "'s status: " + user.status);
-            while (user.status == PlayerStatus.IN_PLAY) {
-                System.out.println("Your cards:");
-                for (Card card : user.hand)
-                    System.out.print(card + " ");
-                System.out.println();
-
-                System.out.println("Hit or stand? (h/s)");
-                userInput = scanner.nextLine();
-                if (userInput.startsWith("s") || userInput.startsWith("S")) {
-                    System.out.println("You've chosen to stand.");
-                    break;
-                } else if (userInput.startsWith("h") || userInput.startsWith("H")) {
-                    Card newCard = deck.dealCard(true);
-                    System.out.println("Here's a card for you: " + newCard);
-                    user.hand.add(newCard);
-                    int userHandValue = evaluateHand(user.hand);
-                    if (userHandValue == 21) {
-                        user.status = PlayerStatus.BLACKJACK;
-                    } else if (userHandValue > 21) {
-                        user.status = PlayerStatus.BUST;
-                    }
-                } else {
-                    System.out.println("Invalid input. Let's try again.");
-                }
-            }
-            switch (user.status) {
-                case IN_PLAY -> System.out.println(user.name + "'s best value: " + evaluateHand(user.hand));
-                case BLACKJACK -> System.out.println(user.name + ": BLACKJACK!");
-                default -> System.out.println(user.name + " is BUST.");
-            }
+            user.playHand();
         }
     }
 
@@ -155,8 +124,10 @@ public class Game {
         int dealerValue = evaluateHand(dealer.hand);
         if (dealerValue > 21) {
             System.out.println("Dealer is bust.");
+            dealer.status = PlayerStatus.BUST;
         } else if (dealerValue == 21) {
             System.out.println("Dealer gets a blackjack");
+            dealer.status = PlayerStatus.BLACKJACK;
         } else {
             System.out.println("Dealer's value: " + dealerValue);
         }
